@@ -1,6 +1,6 @@
 # goblin-messenger
 
-> **Note**: This was a quick ai-assisted CLI app to send Discord notifications to my phone when I kick off long-running processes on my computer.
+> **Note**: This was a quick ai-assisted CLI app to send Discord notifications to my phone when I kick off long-running processes on my computer. The reasoning behind the name is to match the theme of my discord profile which is a goblin and themed around goblins (mostly from magic the gathering).
 
 A Discord notification system for command execution monitoring. Get notified on Discord (and your phone via the Discord mobile app) when your commands complete, with detailed execution metrics.
 
