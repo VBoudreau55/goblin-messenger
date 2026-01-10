@@ -12,7 +12,8 @@ dependencies = [
 ]
 
 [project.scripts]
-goblin-messenger = "goblin_messenger.cli:main"
+goblinmsg = "goblin_messenger.cli:app"
+gmsg = "goblin_messenger.cli:app"
 
 [tool.uv]
 package = true

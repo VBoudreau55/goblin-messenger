@@ -17,7 +17,9 @@ cd goblin-messenger
 uv sync
 
 # Use the CLI
-uv run goblin-messenger --help
+uv run goblinmsg --help
+# Or use the short alias
+uv run gmsg --help
 ```
 
 ### Using pip
@@ -30,8 +32,9 @@ cd goblin-messenger
 # Install the package
 pip install -e .
 
-# Use the CLI
-goblin-messenger --help
+# Use the CLI (both commands work)
+goblinmsg --help
+gmsg --help
 ```
 
 ## Quick Start
@@ -46,26 +49,28 @@ goblin-messenger --help
 ### 2. Save Your Webhook
 
 ```bash
-goblin-messenger save my-phone https://discord.com/api/webhooks/YOUR_WEBHOOK_URL --set-default
+goblinmsg save my-phone https://discord.com/api/webhooks/YOUR_WEBHOOK_URL --set-default
+# Or use the short alias
+gmsg save my-phone https://discord.com/api/webhooks/YOUR_WEBHOOK_URL --set-default
 ```
 
 ### 3. Run a Command with Notifications
 
 ```bash
 # Get notified when it completes
-goblin-messenger run npm run build
+goblinmsg run npm run build
 
 # Get notified at start AND completion
-goblin-messenger run --notify-start python train_model.py
+goblinmsg run --notify-start python train_model.py
 
 # Include command output in the notification
-goblin-messenger run --output pytest tests/
+gmsg run --output pytest tests/
 ```
 
 ### 4. Send Quick Messages
 
 ```bash
-goblin-messenger send "Build finished! 🎉"
+gmsg send "Build finished! 🎉"
 ```
 
 ## Commands Reference
@@ -75,7 +80,7 @@ goblin-messenger send "Build finished! 🎉"
 Save a Discord webhook URL.
 
 ```bash
-goblin-messenger save <name> <url> [--set-default]
+goblinmsg save <name> <url> [--set-default]
 ```
 
 ### `send`
@@ -83,7 +88,7 @@ goblin-messenger save <name> <url> [--set-default]
 Send a message to Discord.
 
 ```bash
-goblin-messenger send <message> [--webhook NAME] [--username USERNAME]
+gmsg send <message> [--webhook NAME] [--username USERNAME]
 ```
 
 ### `run`
@@ -91,7 +96,7 @@ goblin-messenger send <message> [--webhook NAME] [--username USERNAME]
 Execute a command and send completion notification.
 
 ```bash
-goblin-messenger run [OPTIONS] <command>
+goblinmsg run [OPTIONS] <command>
 ```
 
 Options:
@@ -105,7 +110,7 @@ Options:
 Set a saved webhook as the default.
 
 ```bash
-goblin-messenger set-default <name>
+goblinmsg set-default <name>
 ```
 
 ### `list`
@@ -113,7 +118,7 @@ goblin-messenger set-default <name>
 List all saved webhooks (shows which is default).
 
 ```bash
-goblin-messenger list
+goblinmsg list
 ```
 
 ### `delete`
@@ -121,7 +126,7 @@ goblin-messenger list
 Delete a saved webhook.
 
 ```bash
-goblin-messenger delete <name>
+goblinmsg delete <name>
 ```
 
 ## Examples
@@ -129,33 +134,33 @@ goblin-messenger delete <name>
 ### Monitor a long-running build
 
 ```bash
-goblin-messenger run --notify-start npm run build
+goblinmsg run --notify-start npm run build
 ```
 
 ### Send custom alert with custom username
 
 ```bash
-goblin-messenger send "🚨 Production deployment complete" --username "Deploy Bot"
+gmsg send "🚨 Production deployment complete" --username "Deploy Bot"
 ```
 
 ### Run with output included
 
 ```bash
-goblin-messenger run --output python script.py
+goblinmsg run --output python script.py
 ```
 
 ### Multiple webhooks
 
 ```bash
 # Save webhooks for different channels
-goblin-messenger save personal https://discord.com/api/webhooks/... --set-default
-goblin-messenger save work https://discord.com/api/webhooks/...
+goblinmsg save personal https://discord.com/api/webhooks/... --set-default
+goblinmsg save work https://discord.com/api/webhooks/...
 
 # Use specific webhook
-goblin-messenger send "Personal reminder" --webhook personal
+gmsg send "Personal reminder" --webhook personal
 
 # Change default
-goblin-messenger set-default work
+goblinmsg set-default work
 ```
 
 ## Platform Notes
@@ -165,15 +170,15 @@ goblin-messenger set-default work
 Use PowerShell commands for testing:
 
 ```bash3
-goblin-messenger run timeout /t 5
-goblin-messenger run powershell -Command "Start-Sleep -Seconds 10"
+goblinmsg run timeout /t 5
+gmsg run powershell -Command "Start-Sleep -Seconds 10"
 ```
 
 ### Linux/macOS
 
 ```bash
-goblin-messenger run sleep 5
-goblin-messenger run ./long-script.sh
+goblinmsg run sleep 5
+gmsg run ./long-script.sh
 ```
 
 ## What Gets Sent
