@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import subprocess
 import sys
 import time
@@ -304,6 +305,10 @@ def delete(
 
 def main():
     app()
+=======
+def main():
+    print("Hello from goblin-messenger!")
+>>>>>>> main
 
 
 if __name__ == "__main__":
