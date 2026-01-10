@@ -163,7 +163,8 @@ goblin-messenger set-default work
 ### Windows
 
 Use PowerShell commands for testing:
-```bash
+
+```bash3
 goblin-messenger run timeout /t 5
 goblin-messenger run powershell -Command "Start-Sleep -Seconds 10"
 ```
