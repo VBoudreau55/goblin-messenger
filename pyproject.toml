@@ -1,15 +1,24 @@
 [project]
 name = "goblin-messenger"
 version = "0.1.0"
-description = "Add your description here"
+description = "Discord notification system for command execution"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "sqlmodel>=0.0.31",
     "typer>=0.21.1",
-<<<<<<< HEAD
     "psutil>=6.1.1",
     "httpx>=0.28.1",
-=======
->>>>>>> main
+]
+
+[project.scripts]
+goblin-messenger = "goblin_messenger.cli:main"
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.11",
+    "ty>=0.0.11",
 ]
