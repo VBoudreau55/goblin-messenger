@@ -1,164 +1,190 @@
 # goblin-messenger
 
-A Discord notification system for command execution monitoring. Get notified on Discord when your commands complete, with detailed execution metrics.
+> **Note**: This was a quick vibe-coded CLI app to send Discord notifications to my phone when I kick off long-running processes on my computer. Built with AI assistance.
 
-## Features
-
-- 💾 **Webhook Management**: Save and manage multiple Discord webhooks
-- 📨 **Direct Messaging**: Send messages directly to Discord
-- 🔄 **Command Monitoring**: Execute commands and get notified on completion
-- 📊 **Execution Metrics**: Track CPU usage, memory, duration, and exit codes
-- ✅ **Pydantic Validation**: All inputs validated with character limits (2000 for messages, 80 for usernames)
-- 🎯 **Default Webhook**: Set a default webhook for quick notifications
+A Discord notification system for command execution monitoring. Get notified on Discord (and your phone via the Discord mobile app) when your commands complete, with detailed execution metrics.
 
 ## Installation
 
+### Using uv (recommended)
+
 ```bash
+# Clone the repo
+git clone https://github.com/VBoudreau55/goblin-messenger.git
+cd goblin-messenger
+
+# Install with uv
 uv sync
+
+# Use the CLI
+uv run goblin-messenger --help
+```
+
+### Using pip
+
+```bash
+# Clone the repo
+git clone https://github.com/VBoudreau55/goblin-messenger.git
+cd goblin-messenger
+
+# Install the package
+pip install -e .
+
+# Use the CLI
+goblin-messenger --help
 ```
 
 ## Quick Start
 
-### 1. Save a Discord Webhook
+### 1. Get a Discord Webhook URL
+
+1. Open Discord and go to a server where you have admin permissions
+2. Right-click a channel → Edit Channel → Integrations → Webhooks
+3. Create a new webhook and copy the URL
+4. Install Discord mobile app and enable notifications for that channel
+
+### 2. Save Your Webhook
 
 ```bash
-python main.py save my-webhook https://discord.com/api/webhooks/... --set-default
+goblin-messenger save my-phone https://discord.com/api/webhooks/YOUR_WEBHOOK_URL --set-default
 ```
 
-### 2. Send a Message
+### 3. Run a Command with Notifications
 
 ```bash
-python main.py send "Hello from goblin-messenger!"
+# Get notified when it completes
+goblin-messenger run npm run build
+
+# Get notified at start AND completion
+goblin-messenger run --notify-start python train_model.py
+
+# Include command output in the notification
+goblin-messenger run --output pytest tests/
 ```
 
-With custom username:
+### 4. Send Quick Messages
+
 ```bash
-python main.py send "Build completed" --username "CI/CD Bot"
+goblin-messenger send "Build finished! 🎉"
 ```
 
-### 3. Monitor a Command
-
-```bash
-python main.py run pytest tests/
-```
-
-With start notification:
-```bash
-python main.py run --notify-start npm run build
-```
-
-## Commands
+## Commands Reference
 
 ### `save`
 Save a Discord webhook URL.
 
 ```bash
-python main.py save <name> <url> [--set-default]
+goblin-messenger save <name> <url> [--set-default]
 ```
-
-Options:
-- `--set-default, -d`: Set this webhook as the default
 
 ### `send`
 Send a message to Discord.
 
 ```bash
-python main.py send <message> [--webhook NAME] [--username USERNAME]
+goblin-messenger send <message> [--webhook NAME] [--username USERNAME]
 ```
-
-Options:
-- `--webhook, -w`: Specify webhook to use (uses default if not specified)
-- `--username, -u`: Custom username for the message (max 80 characters)
-
-Validation:
-- Message content: max 2000 characters
-- Username: max 80 characters
-- Content cannot be empty
 
 ### `run`
 Execute a command and send completion notification.
 
 ```bash
-python main.py run [--webhook NAME] [--notify-start] -- <command>
+goblin-messenger run [OPTIONS] <command>
 ```
 
 Options:
 - `--webhook, -w`: Specify webhook to use (uses default if not specified)
 - `--notify-start`: Send notification when command starts
+- `--output, -o`: Include stdout/stderr in notification (off by default)
 
-The notification includes:
-- ✅/❌ Success/failure status
-- Command executed
-- Exit code
-- Duration
-- CPU usage (%)
-- Memory usage (MB)
-- stdout (truncated to 500 chars)
-- stderr (truncated to 500 chars)
-
-### `list`
-List all saved webhooks.
+### `set-default`
+Set a saved webhook as the default.
 
 ```bash
-python main.py list
+goblin-messenger set-default <name>
+```
+
+### `list`
+List all saved webhooks (shows which is default).
+
+```bash
+goblin-messenger list
 ```
 
 ### `delete`
 Delete a saved webhook.
 
 ```bash
-python main.py delete <name>
+goblin-messenger delete <name>
 ```
 
 ## Examples
 
 ### Monitor a long-running build
 ```bash
-python main.py run --notify-start -- npm run build
+goblin-messenger run --notify-start npm run build
 ```
 
-### Send custom alert
+### Send custom alert with custom username
 ```bash
-python main.py send "🚨 Production deployment starting" --username "Deploy Bot"
+goblin-messenger send "🚨 Production deployment complete" --username "Deploy Bot"
+```
+
+### Run with output included
+```bash
+goblin-messenger run --output python script.py
 ```
 
 ### Multiple webhooks
 ```bash
 # Save webhooks for different channels
-python main.py save dev-alerts https://discord.com/api/webhooks/dev... --set-default
-python main.py save prod-alerts https://discord.com/api/webhooks/prod...
+goblin-messenger save personal https://discord.com/api/webhooks/... --set-default
+goblin-messenger save work https://discord.com/api/webhooks/...
 
 # Use specific webhook
-python main.py send "Prod deployment complete" --webhook prod-alerts
+goblin-messenger send "Personal reminder" --webhook personal
+
+# Change default
+goblin-messenger set-default work
 ```
 
-## Architecture
+## Platform Notes
 
-- **Typer**: CLI framework with rich help messages
-- **Pydantic**: Input validation with character limits
-- **SQLModel**: Database ORM for webhook storage
+### Windows
+Use PowerShell commands for testing:
+```bash
+goblin-messenger run timeout /t 5
+goblin-messenger run powershell -Command "Start-Sleep -Seconds 10"
+```
+
+### Linux/macOS
+```bash
+goblin-messenger run sleep 5
+goblin-messenger run ./long-script.sh
+```
+
+## What Gets Sent
+
+The notification includes:
+- ✅/❌ Success/failure status emoji
+- Command executed
+- Exit code
+- Duration in seconds
+- CPU usage percentage
+- Memory usage in MB
+- stdout/stderr (only if `--output` flag is used, truncated to 500 chars each)
+
+## Technical Details
+
+**Built with:**
+- **Typer**: CLI framework
+- **SQLModel**: ORM for webhook storage
 - **SQLite**: Local database (~/.goblin-messenger/webhooks.db)
-- **psutil**: Process monitoring for CPU and memory metrics
-- **httpx**: HTTP client for Discord API
+- **psutil**: Process monitoring
+- **httpx**: Discord API client
+- **Pydantic**: Input validation
 
-## Data Models
+**AI Disclaimer**: This project was built with significant AI assistance for rapid prototyping and learning.
 
-### Webhook (SQLModel)
-- `id`: Primary key
-- `name`: Unique webhook name
-- `url`: Discord webhook URL
-- `is_default`: Default webhook flag
-- `created_at`: Creation timestamp
+## License
 
-### DiscordMessage (Pydantic)
-- `content`: Message content (max 2000 chars)
-- `username`: Optional custom username (max 80 chars)
-
-### CommandExecutionResult (Pydantic)
-- `command`: Command string
-- `exit_code`: Process exit code
-- `duration`: Execution time in seconds
-- `cpu_percent`: CPU usage percentage
-- `memory_mb`: Memory usage in MB
-- `stdout`: Standard output (truncated)
-- `stderr`: Standard error (truncated)
+See [LICENSE](LICENSE) file.
