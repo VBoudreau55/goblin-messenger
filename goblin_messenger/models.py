@@ -55,18 +55,18 @@ class CommandExecutionResult(BaseModel):
         msg += f"**Memory:** {self.memory_mb:.1f}MB\n"
 
         if self.stdout:
-            truncated_stdout = self.stdout[:500]
-            if len(self.stdout) > 500:
+            truncated_stdout = self.stdout[:100]
+            if len(self.stdout) > 100:
                 truncated_stdout += "\n... (truncated)"
             msg += f"\n**Output:**\n```\n{truncated_stdout}\n```"
 
         if self.stderr:
-            truncated_stderr = self.stderr[:500]
-            if len(self.stderr) > 500:
+            truncated_stderr = self.stderr[:100]
+            if len(self.stderr) > 100:
                 truncated_stderr += "\n... (truncated)"
             msg += f"\n**Errors:**\n```\n{truncated_stderr}\n```"
 
-        if len(msg) > 2000:
-            msg = msg[:1997] + "..."
+        if len(msg) > 1000:
+            msg = msg[:997] + "..."
 
         return msg

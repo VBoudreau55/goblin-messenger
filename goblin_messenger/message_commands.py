@@ -134,7 +134,7 @@ def run(
         stderr=stderr.strip() if include_output else "",
         cpu_percent=cpu_percent,
         memory_mb=memory_mb,
-        stdout=stdout.strip(),
+        stdout=stdout.strip() if include_output else "No output specified.",
         duration=duration,
     )
 
