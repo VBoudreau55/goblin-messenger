@@ -99,11 +99,13 @@ Execute a command and send completion notification.
 goblinmsg run [OPTIONS] <command>
 ```
 
+
 Options:
 
 - `--webhook, -w`: Specify webhook to use (uses default if not specified)
 - `--notify-start`: Send notification when command starts
 - `--output, -o`: Include stdout/stderr in notification (off by default)
+- `--no-stream`: Do not stream output to terminal; capture output instead (by default, output is streamed to your terminal)
 
 **Note:** If your command includes flags that start with `-`, use `--` to separate them from goblin-messenger's options:
 
@@ -152,10 +154,25 @@ goblinmsg run --notify-start npm run build
 gmsg send "🚨 Production deployment complete" --username "Deploy Bot"
 ```
 
+
 ### Run with output included
 
 ```bash
 goblinmsg run --output python script.py
+```
+
+### Stream output to terminal (default)
+
+```bash
+goblinmsg run python script.py
+# Output from script.py will appear live in your terminal
+```
+
+### Capture output instead of streaming
+
+```bash
+goblinmsg run --no-stream python script.py
+# Output will not appear live; it will be captured and sent in the notification (if --output is used)
 ```
 
 ### Multiple webhooks

@@ -77,6 +77,12 @@ def run(
         bool,
         typer.Option("--output", "-o", help="Include stdout/stderr in notification"),
     ] = False,
+    no_stream: Annotated[
+        bool,
+        typer.Option(
+            "--no-stream", "-ns",, help="Do not stream output to terminal; capture instead"
+        ),
+    ] = False,
 ):
     """Execute a command and send completion notification to Discord."""
     init_db()
@@ -110,12 +116,20 @@ def run(
     typer.echo(f"Running: {cmd_str}")
 
     start_time = time.time()
-    process = subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    if no_stream:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    else:
+        process = subprocess.Popen(
+            command,
+            stdout=None,
+            stderr=None,
+            text=True,
+        )
 
     try:
         psutil_process = psutil.Process(process.pid)
@@ -125,16 +139,27 @@ def run(
         cpu_percent = 0.0
         memory_mb = 0.0
 
-    stdout, stderr = process.communicate()
+    if no_stream:
+        stdout, stderr = process.communicate()
+    else:
+        process.wait()
+        stdout, stderr = "(streamed to terminal)", "(streamed to terminal)"
     duration = time.time() - start_time
+
+    if include_output and no_stream:
+        stdout_value = stdout.strip()
+    elif not no_stream:
+        stdout_value = "Output was streamed to terminal."
+    else:
+        stdout_value = "No output specified."
 
     result = CommandExecutionResult(
         command=cmd_str,
         exit_code=process.returncode if include_output else 0,
-        stderr=stderr.strip() if include_output else "",
+        stderr=stderr.strip() if include_output and no_stream else "",
         cpu_percent=cpu_percent,
         memory_mb=memory_mb,
-        stdout=stdout.strip() if include_output else "No output specified.",
+        stdout=stdout_value,
         duration=duration,
     )
 
