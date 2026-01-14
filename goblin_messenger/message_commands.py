@@ -80,7 +80,9 @@ def run(
     no_stream: Annotated[
         bool,
         typer.Option(
-            "--no-stream", "-ns",, help="Do not stream output to terminal; capture instead"
+            "--no-stream",
+            "-ns",
+            help="Do not stream output to terminal; capture instead",
         ),
     ] = False,
 ):
