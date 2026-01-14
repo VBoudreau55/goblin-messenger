@@ -105,6 +105,15 @@ Options:
 - `--notify-start`: Send notification when command starts
 - `--output, -o`: Include stdout/stderr in notification (off by default)
 
+**Note:** If your command includes flags that start with `-`, use `--` to separate them from goblin-messenger's options:
+
+```bash
+goblinmsg run -- ls -l
+goblinmsg run -- python -m mymodule --flag value
+```
+
+This prevents the CLI from misinterpreting command flags as its own options.
+
 ### `set-default`
 
 Set a saved webhook as the default.
